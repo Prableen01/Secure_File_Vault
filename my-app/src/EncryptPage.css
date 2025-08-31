@@ -1,0 +1,71 @@
+/* EncryptPage.css */
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f4f6f8;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 700px;
+  margin: 50px auto;
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+  font-size: 28px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+textarea {
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+  padding: 12px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  font-family: monospace;
+  outline: none;
+  transition: border-color 0.2s ease-in-out;
+}
+
+textarea:focus {
+  border-color: #0078d7;
+}
+
+button {
+  display: inline-block;
+  background: #0078d7;
+  color: #fff;
+  padding: 10px 18px;
+  margin-right: 12px;
+  margin-bottom: 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s ease-in-out;
+}
+
+button:hover {
+  background: #005a9e;
+}
+
+.result-box {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 20px;
+  word-wrap: break-word;
+  font-family: monospace;
+  font-size: 13px;
+}
