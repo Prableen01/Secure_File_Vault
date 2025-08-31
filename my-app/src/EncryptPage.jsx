@@ -16,11 +16,22 @@ export default function SecureFileVault() {
   const [downloadName, setDownloadName] = useState("decrypted.bin");
   const fileInputRef = useRef(null);
 
+  // Load public key from localStorage when component mounts
   useEffect(() => {
+    const storedPubKey = localStorage.getItem("secureVaultPubKey");
+    if (storedPubKey) setPubKeyText(storedPubKey);
+
     return () => {
       if (downloadUrl) URL.revokeObjectURL(downloadUrl);
     };
   }, [downloadUrl]);
+
+  // Save public key to localStorage whenever it changes
+  useEffect(() => {
+    if (pubKeyText.trim()) {
+      localStorage.setItem("secureVaultPubKey", pubKeyText.trim());
+    }
+  }, [pubKeyText]);
 
   // ---------- Helpers ----------
   function bufToHex(buf) {
@@ -158,14 +169,13 @@ export default function SecureFileVault() {
       const rawAes = await exportRawAesKey(aesKey);
       const rsaEncAes = await subtle.encrypt({ name: "RSA-OAEP" }, pubKey, rawAes);
 
-      // Send to backend
+      // Send only encrypted file + AES key + IV (no need to send hash separately)
       await fetch("http://localhost:5000/api/store", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           filename: file.name,
           encryptedFile: bufToHex(ciphertext),
-          hash: bufToHex(digest),
           encryptedAESKey: bufToHex(rsaEncAes),
           ivHex: bufToHex(iv),
         }),
@@ -197,7 +207,6 @@ export default function SecureFileVault() {
       const iv = hexToBuf(data.ivHex);
       const rsaEncAes = hexToBuf(data.encryptedAESKey);
       const ciphertext = hexToBuf(data.encryptedFile);
-      const hashStored = hexToBuf(data.hash);
 
       const privKey = await importRsaPrivateKey(privKeyText.trim());
       const rawAes = await subtle.decrypt({ name: "RSA-OAEP" }, privKey, rsaEncAes);
@@ -209,7 +218,7 @@ export default function SecureFileVault() {
       const filePart = decU8.slice(32).buffer;
 
       const recomputed = await sha256(filePart);
-      const ok = abEqual(hashPart, recomputed) && abEqual(hashPart, hashStored);
+      const ok = abEqual(hashPart, recomputed);
       setDecryptedOk(ok);
 
       const name = `DECRYPTED_${data.filename}`;
@@ -231,10 +240,7 @@ export default function SecureFileVault() {
   return (
     <div className="min-h-screen w-full bg-neutral-950 text-neutral-100 p-6">
       <div className="max-w-4xl mx-auto space-y-6">
-        {/* <h1 className="text-2xl font-semibold">🔐 Secure File Vault</h1> */}
-
         <section className="p-4 rounded-2xl bg-neutral-900 space-y-4">
-          {/* <h2 className="text-lg font-medium">1) Encrypt & Store</h2> */}
           <textarea
             value={pubKeyText}
             onChange={(e) => setPubKeyText(e.target.value)}

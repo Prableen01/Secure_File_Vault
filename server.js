@@ -23,9 +23,8 @@ mongoose.connect("mongodb://127.0.0.1:27017/securevault", {
 const EncryptedSchema = new mongoose.Schema({
   filename: String,
   encryptedFile: String,   // ciphertext (hex)
-  hash: String,            // SHA-256 digest (hex)
   encryptedAESKey: String, // RSA-OAEP encrypted AES key (hex)
-  ivHex: String,           // store IV too (needed for AES-GCM decryption)
+  ivHex: String,           // AES-GCM IV (hex)
   timestamp: { type: Date, default: Date.now },
 });
 
@@ -34,12 +33,15 @@ const EncryptedModel = mongoose.model("EncryptedData", EncryptedSchema);
 // ✅ Store API
 app.post("/api/store", async (req, res) => {
   try {
-    const { filename, encryptedFile, hash, encryptedAESKey, ivHex } = req.body;
+    const { filename, encryptedFile, encryptedAESKey, ivHex } = req.body;
+
+    if (!filename || !encryptedFile || !encryptedAESKey || !ivHex) {
+      return res.status(400).json({ success: false, message: "Missing required fields" });
+    }
 
     const newData = new EncryptedModel({
       filename,
       encryptedFile,
-      hash,
       encryptedAESKey,
       ivHex,
     });
@@ -47,7 +49,7 @@ app.post("/api/store", async (req, res) => {
     await newData.save();
     res.json({ success: true, message: "Data stored successfully in MongoDB" });
   } catch (err) {
-    console.error(err);
+    console.error("Error storing data:", err);
     res.status(500).json({ success: false, message: "Error storing data" });
   }
 });
@@ -56,20 +58,21 @@ app.post("/api/store", async (req, res) => {
 app.get("/api/retrieve/:filename", async (req, res) => {
   try {
     const doc = await EncryptedModel.findOne({ filename: req.params.filename });
-    if (!doc) return res.status(404).json({ success: false, message: "File not found" });
+    if (!doc) {
+      return res.status(404).json({ success: false, message: "File not found" });
+    }
 
-    // return only the needed fields
     res.json({
       filename: doc.filename,
       encryptedFile: doc.encryptedFile,
-      hash: doc.hash,
       encryptedAESKey: doc.encryptedAESKey,
       ivHex: doc.ivHex,
     });
   } catch (err) {
-    console.error(err);
+    console.error("Error retrieving data:", err);
     res.status(500).json({ success: false, message: "Error retrieving data" });
   }
 });
 
+// ✅ Start server
 app.listen(5000, () => console.log("Server running on http://localhost:5000"));
