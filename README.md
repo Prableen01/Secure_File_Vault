@@ -74,7 +74,7 @@ flowchart LR
 
 🚀 Getting Started
 1️⃣ Clone the Repository
-git clone https://github.com/yourusername/secure-file-vault.git
+git clone https://github.com/Cyber-Security-July-Dec-2025/C22.git
 cd secure-file-vault
 
 2️⃣ Install Dependencies
@@ -89,7 +89,7 @@ npm install
 3️⃣ Run the Application
 # Start backend server
 cd backend
-npm run dev
+node server.js
 
 # Start frontend (React)
 cd ../my-app
@@ -107,16 +107,19 @@ openssl genrsa -out private.pem 2048
 # Extract Public Key
 openssl rsa -in private.pem -pubout -out public.pem
 
+Open the keys in notepad
 
-Convert Keys to HEX
+#open public key in notepad
+notepad public.pem
 
-Convert using OpenSSL or a custom script.
+#open private key in notepad
+notepad private.pem
 
 Paste keys into the app when prompted.
 
 Storage
 
-Public key: may be stored in localStorage.
+Public key: stored in localStorage.
 
 Private key: must be entered manually each time (never stored).
 
@@ -153,16 +156,14 @@ Original file is available for download.
 
 📂 Project Structure
 secure-file-vault/
-│── frontend/           # React frontend (WebCrypto API)
+│── my-app/           # React frontend 
 │   ├── src/
-│   │   ├── components/ # UI Components
-│   │   ├── utils/      # Cryptographic utilities
+│   │   ├── EncryptPage.css #contains the css of page  
+│   │   ├── EncryptPage.jsx #contains the page component 
 │   │   └── App.js
 │   └── package.json
 │
-│── backend/            # Node.js / Next.js backend
-│   ├── routes/         # API routes (upload/download)
-│   ├── utils/          # Storage helpers
+│── backend/         # Backend
 │   └── server.js
 │
 │── README.md
