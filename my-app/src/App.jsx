@@ -11,7 +11,7 @@ function App() {
   return (
     <>
        <div>
-      <h1>Secure File Vault</h1>
+      {/* <h1>Secure File Vault</h1> */}
       <EncryptPage />
     </div>
     </>

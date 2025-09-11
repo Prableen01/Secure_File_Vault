@@ -237,72 +237,63 @@ export default function SecureFileVault() {
   }
 
   // ---------- UI ----------
-  return (
-    <div className="min-h-screen w-full bg-neutral-950 text-neutral-100 p-6">
-      <div className="max-w-4xl mx-auto space-y-6">
-        <section className="p-4 rounded-2xl bg-neutral-900 space-y-4">
-          <textarea
-            value={pubKeyText}
-            onChange={(e) => setPubKeyText(e.target.value)}
-            placeholder="Paste RSA PUBLIC key"
-            className="w-full h-28 p-2 rounded-xl bg-neutral-800"
-          />
-          <input
-            ref={fileInputRef}
-            type="file"
-            onChange={(e) => setFile(e.target.files?.[0] || null)}
-            className="w-full rounded-xl bg-neutral-800 p-2"
-          />
-          <button
-            onClick={handleEncrypt}
-            disabled={encrypting}
-            className="w-full py-2 rounded-2xl bg-indigo-600 hover:bg-indigo-500"
-          >
-            {encrypting ? "Encrypting…" : "Encrypt & Store"}
-          </button>
-        </section>
+ return (
+  <div className="vault-container">
+    <h1>🔒 Secure File Vault</h1>
 
-        <section className="p-4 rounded-2xl bg-neutral-900 space-y-4">
-          <h2 className="text-lg font-medium">2) Retrieve & Decrypt</h2>
-          <textarea
-            value={privKeyText}
-            onChange={(e) => setPrivKeyText(e.target.value)}
-            placeholder="Paste RSA PRIVATE key"
-            className="w-full h-28 p-2 rounded-xl bg-neutral-800"
-          />
-          <input
-            value={filenameToRetrieve}
-            onChange={(e) => setFilenameToRetrieve(e.target.value)}
-            placeholder="Enter filename to retrieve"
-            className="w-full rounded-xl bg-neutral-800 p-2"
-          />
-          <button
-            onClick={handleRetrieveAndDecrypt}
-            disabled={decrypting}
-            className="w-full py-2 rounded-2xl bg-green-600 hover:bg-green-500"
-          >
-            {decrypting ? "Decrypting…" : "Retrieve & Decrypt"}
-          </button>
+    <div className="vault-grid">
+      {/* Encrypt Section */}
+      <section className="vault-card">
+        <h2>1) Encrypt & Store</h2>
+        <textarea
+          value={pubKeyText}
+          onChange={(e) => setPubKeyText(e.target.value)}
+          placeholder="Paste RSA PUBLIC key"
+        />
+        <input
+          ref={fileInputRef}
+          type="file"
+          onChange={(e) => setFile(e.target.files?.[0] || null)}
+        />
+        <button onClick={handleEncrypt} disabled={encrypting}>
+          {encrypting ? "Encrypting…" : "Encrypt & Store"}
+        </button>
+      </section>
 
-          {decryptedOk !== null && (
-            <div className={`text-sm ${decryptedOk ? "text-emerald-400" : "text-red-400"}`}>
-              {decryptedOk ? "Hash verified ✓" : "Hash mismatch ✗"}
-            </div>
-          )}
+      {/* Decrypt Section */}
+      <section className="vault-card">
+        <h2>2) Retrieve & Decrypt</h2>
+        <textarea
+          value={privKeyText}
+          onChange={(e) => setPrivKeyText(e.target.value)}
+          placeholder="Paste RSA PRIVATE key"
+        />
+        <input
+        type="text"
+          value={filenameToRetrieve}
+          onChange={(e) => setFilenameToRetrieve(e.target.value)}
+          placeholder="Enter filename to retrieve"
+        />
+        <button onClick={handleRetrieveAndDecrypt} disabled={decrypting}>
+          {decrypting ? "Decrypting…" : "Retrieve & Decrypt"}
+        </button>
 
-          {downloadUrl && (
-            <a
-              href={downloadUrl}
-              download={downloadName}
-              className="inline-block mt-2 px-3 py-2 rounded-2xl bg-neutral-800 hover:bg-neutral-700"
-            >
-              Download {downloadName}
-            </a>
-          )}
-        </section>
+        {decryptedOk !== null && (
+          <div className={`status ${decryptedOk ? "success" : "error"}`}>
+            {decryptedOk ? "Hash verified ✓" : "Hash mismatch ✗"}
+          </div>
+        )}
 
-        <div className="text-sm text-neutral-300">{status}</div>
-      </div>
+        {downloadUrl && (
+          <a href={downloadUrl} download={downloadName}>
+            Download {downloadName}
+          </a>
+        )}
+      </section>
     </div>
-  );
+
+    <div className="status">{status}</div>
+  </div>
+);
+
 }

@@ -1,71 +1,186 @@
 /* EncryptPage.css */
 
+/* Global Reset */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #f4f6f8;
   margin: 0;
   padding: 0;
+  background: #0f0f0f; /* deep dark background */
+  color: #e0e0e0;
+  line-height: 1.6;
 }
 
-.container {
-  max-width: 700px;
-  margin: 50px auto;
-  background: #ffffff;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+/* Overall page container */
+.vault-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 20px;
+  color: #f1f1f1;
 }
 
-h1 {
+/* Page Title */
+.vault-container h1 {
   text-align: center;
   font-size: 28px;
-  color: #333;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  font-weight: 600;
+  color: #e5e5e5;
 }
 
-textarea {
+/* Split grid: left=Encrypt, right=Decrypt */
+.vault-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+/* Partition cards */
+.vault-card {
+  background: #1c1c1c;
+  padding: 28px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+}
+
+.vault-card h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 18px;
+  color: #f9fafb;
+}
+
+/* Inputs */
+.vault-card textarea,
+.vault-card input[type="text"],
+.vault-card input[type="file"] {
   width: 100%;
-  min-height: 120px;
-  resize: vertical;
-  padding: 12px;
-  margin-bottom: 20px;
+  background: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  border-radius: 10px;
+  color: #f1f1f1;
+  padding: 12px 14px;
+  font-size: 14px;
+  margin-bottom: 16px;
+  font-family: monospace;
+  outline: none;
+  transition: border 0.2s ease, background 0.2s ease;
+}
+
+.vault-card textarea:focus,
+.vault-card input:focus {
+  border-color: #6366f1; /* indigo accent */
+  background: #333;
+}
+
+/* Buttons */
+.vault-card button {
+  background: linear-gradient(135deg, #4f46e5, #4338ca);
+  color: #fff;
+  font-weight: 500;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+}
+
+.vault-card button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4);
+}
+
+.vault-card button:disabled {
+  background: #555;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Download links */
+.vault-card a {
+  display: inline-block;
+  text-decoration: none;
+  background: #2d2d2d;
+  color: #f1f1f1;
+  padding: 10px 16px;
+  border-radius: 10px;
+  margin-top: 12px;
+  transition: background 0.2s ease;
+}
+
+.vault-card a:hover {
+  background: #3a3a3a;
+}
+
+/* Status messages */
+.status {
+  font-size: 14px;
+  margin-top: 20px;
+  text-align: center;
+  color: #b3b3b3;
+}
+
+.status.success {
+  color: #4ade80; /* green */
+}
+
+.status.error {
+  color: #f87171; /* red */
+}
+
+.status.warning {
+  color: #facc15; /* yellow */
+}
+
+/* Responsive: stack partitions vertically on mobile */
+@media (max-width: 900px) {
+  .vault-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* Fix file input styling */
+input[type="file"] {
+  color: #f1f1f1; /* make text white */
+  background: #2a2a2a !important; /* keep consistent dark background */
+  border: 1px solid #3a3a3a;
+  border-radius: 10px;
+  padding: 8px;
+  cursor: pointer;
+}
+
+/* Improve the file selector button */
+input[type="file"]::file-selector-button {
+  background: linear-gradient(135deg, #4f46e5, #4338ca);
+  color: #fff;
+  border: none;
   border-radius: 8px;
-  border: 1px solid #ccc;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 10px;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+}
+/* Text input fix */
+input[type="text"] {
+  background-color: #2a2a2a !important; /* dark background */
+  color: #f1f1f1 !important;           /* white text */
+  border: 1px solid #3a3a3a;
+  border-radius: 10px;
+  padding: 12px 14px;
   font-size: 14px;
   font-family: monospace;
   outline: none;
-  transition: border-color 0.2s ease-in-out;
 }
 
-textarea:focus {
-  border-color: #0078d7;
-}
-
-button {
-  display: inline-block;
-  background: #0078d7;
-  color: #fff;
-  padding: 10px 18px;
-  margin-right: 12px;
-  margin-bottom: 12px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background 0.2s ease-in-out;
-}
-
-button:hover {
-  background: #005a9e;
-}
-
-.result-box {
-  background: #f9f9f9;
-  border: 1px solid #ddd;
-  padding: 15px;
-  border-radius: 8px;
-  margin-top: 20px;
-  word-wrap: break-word;
-  font-family: monospace;
-  font-size: 13px;
+/* Autofill fix (Chrome, Safari, Edge) */
+input[type="text"]:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px #2a2a2a inset !important;
+  -webkit-text-fill-color: #f1f1f1 !important;
+  caret-color: #f1f1f1;
 }
